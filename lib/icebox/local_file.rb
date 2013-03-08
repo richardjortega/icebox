@@ -1,5 +1,6 @@
 module Icebox
   class LocalFile
+    require 'digest/md5'
     
     attr_reader :path
     
@@ -10,6 +11,14 @@ module Icebox
     
     def name
       File.basename(@path)
+    end
+    
+    def md5
+      Digest::MD5.hexdigest(File.read(path))
+    end
+    
+    def size
+      File.size(path)
     end
     
   end
