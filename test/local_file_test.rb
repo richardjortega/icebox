@@ -5,7 +5,7 @@ class LocalFileTest < Test::Unit::TestCase
   include Icebox::Test
 
   def setup
-    @tmp_filename = temp_file(:name => 'ten_megs', :size_in_mb => 10)
+    @tmp_filename = temp_file(:name => 'ten_k', :size => 10.KB)
   end
   
   def test_name
@@ -25,7 +25,11 @@ class LocalFileTest < Test::Unit::TestCase
   
   def test_size
     local_file = LocalFile.new(@tmp_filename)
-    assert_equal 1024*10, local_file.size
+    assert_equal 10.KB, local_file.size
+  end
+  
+  def test_to_s_includes_path
+    assert_equal "<Icebox::LocalFile '#{@tmp_filename}'>", LocalFile.new(@tmp_filename).to_s
   end
 
 end

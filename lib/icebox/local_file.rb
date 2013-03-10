@@ -21,5 +21,9 @@ module Icebox
       File.size(path)
     end
     
+    def to_s
+      "<#{self.class} '#{path}'>"
+    end
+    
   end
 end
