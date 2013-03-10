@@ -5,18 +5,18 @@ class UploadQueueTest < Test::Unit::TestCase
   include Icebox::Test
 
   def test_enqueue_a_256_mb_file_immediately_uploads_it
-    file = OpenStruct.new(:name => '256_mb_pomeranian', :size => 256*1024)
+    file = OpenStruct.new(:path => '/tmp/256_mb_pomeranian', :size => 256.MB)
     client = mock('glacier_client')
-    client.expects(:upload).with(file.name)
+    client.expects(:upload).with(file.path)
     queue = UploadQueue.new(client)
     queue.enqueue(file)
   end
   
-#  def test_enqueue_a_128_mb_file_queues_it
-#    file = OpenStruct.new(:name => '128_mb_pomeranian', :size => 128*1024)
-#    queue = UploadQueue.new(stub)
-#    queue.enqueue(file)
-#    assert_equal 1, queue.size
-#  end
+  def test_enqueue_a_128_mb_file_queues_it
+    file = OpenStruct.new(:path => '/tmp/128_mb_pomeranian', :size => 128.MB)
+    queue = UploadQueue.new(nil)
+    queue.enqueue(file)
+    assert_equal 1, queue.size
+  end
 
 end
