@@ -30,5 +30,10 @@ module Icebox
         raise unless File.exists?(filename)
       end
     end
+
+    def assert_tar_contains(files, tar_filename)
+      contents = shell_exec "tar -tvf #{tar_filename}"
+      files.each { |f| assert contents.include?(File.basename(f.path)) }
+    end
   end
 end

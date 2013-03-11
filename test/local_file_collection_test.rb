@@ -22,8 +22,7 @@ class LocalFileCollectionTest < Test::Unit::TestCase
     collection << file1
     collection << file2
     local_tar_file = collection.path
-    contents = shell_exec "tar -tvf #{local_tar_file}"
-    [file1, file2].each { |f| assert contents.include?(File.basename(f.path)) }
+    assert_tar_contains [file1, file2], local_tar_file
   end
 
 end

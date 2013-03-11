@@ -1,34 +1,42 @@
 module Icebox
   class UploadQueue
     
-    def initialize(client)
+    attr_reader :size
+
+    def initialize(client, upload_threshold=250.MB)
       @client = client
+      @upload_threshold = upload_threshold
+      @size = 0
     end
     
-    def enqueue(local_file)
-      queue << local_file
-      process_queue
+    def <<(local_file)
+      if local_file.size >= @upload_threshold
+        upload local_file
+      else
+        enqueue local_file
+      end
+      self
     end
 
-    def size
-      queue.size
-    end
-    
     private
 
-    def process_queue
-      queue.reject! do |candidate|
-        if candidate.size > 250.MB
-          @client.upload(candidate.path)
-          true
-        else
-          false
-        end
+    def enqueue(local_file)
+      queue << local_file
+      @size += 1
+      if queue.size >= @upload_threshold
+        upload queue
+        @queue = nil
+        @size = 0
       end
     end
 
-    def queue
-      @queue ||= []
+    def upload(file)
+      @client.upload file.path
     end
+
+    def queue
+      @queue ||= LocalFileCollection.new
+    end
+
   end
 end
