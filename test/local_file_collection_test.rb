@@ -7,8 +7,8 @@ class LocalFileCollectionTest < Test::Unit::TestCase
   include Icebox::Util
 
   def test_knows_size
-    file1 = LocalFile.new(temp_file(:size => 1.KB))
-    file2 = LocalFile.new(temp_file(:size => 2.KB))
+    file1 = temp_local_file :size => 1.KB
+    file2 = temp_local_file :size => 2.KB
     collection = LocalFileCollection.new
     collection << file1
     collection << file2
@@ -16,8 +16,8 @@ class LocalFileCollectionTest < Test::Unit::TestCase
   end
   
   def test_added_files_exist_inside_tar
-    file1 = LocalFile.new(temp_file(:size => 16.KB))
-    file2 = LocalFile.new(temp_file(:size => 10.KB))
+    file1 = temp_local_file :size => 16.KB
+    file2 = temp_local_file :size => 10.KB
     collection = LocalFileCollection.new
     collection << file1
     collection << file2
