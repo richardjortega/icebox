@@ -31,7 +31,7 @@ module Icebox
     end
 
     def upload(file)
-      @client.upload file.path
+      @client.upload file
     end
 
     def queue

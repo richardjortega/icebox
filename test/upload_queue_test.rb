@@ -7,7 +7,7 @@ class UploadQueueTest < Test::Unit::TestCase
   def test_enqueuing_a_big_file_immediately_uploads_it
     file = LocalFile.new(temp_file(:size => 25.KB))
     client = mock('glacier_client')
-    client.expects(:upload).with(file.path)
+    client.expects(:upload).with(file)
     queue = UploadQueue.new(client, 20.KB)
     queue << file
   end
@@ -24,8 +24,8 @@ class UploadQueueTest < Test::Unit::TestCase
     file2 = LocalFile.new(temp_file(:size => 525.KB))
     client = mock('glacier_client')
     client.expects(:upload).with do |actual|
-      assert File.size(actual) >= (500 + 525).KB
-      assert_tar_contains [file1, file2], actual
+      assert actual.size >= (500 + 525).KB
+      assert_tar_contains [file1, file2], actual.path
     end
     queue = UploadQueue.new(client, 1.MB)
     queue << file1 << file2
