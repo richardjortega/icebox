@@ -21,8 +21,13 @@ module Icebox
     def temp_file(options={})
       options = {:name => "icebox_tmp_#{Time.now.to_i}", :size => 0}.merge(options)
       new_file = Tempfile.new(options[:name])
+      temp_files << new_file
       fill_file(new_file.path, options[:size])
       new_file.path
+    end
+
+    def temp_local_file(options={})
+      LocalFile.new(temp_file(options))
     end
     
     def data_file(name)
@@ -34,6 +39,10 @@ module Icebox
     def assert_tar_contains(files, tar_filename)
       contents = shell_exec "tar -tvf #{tar_filename}"
       files.each { |f| assert contents.include?(File.basename(f.path)) }
+    end
+
+    def temp_files
+      @temp_files ||= []
     end
   end
 end
