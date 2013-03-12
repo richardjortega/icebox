@@ -1,7 +1,7 @@
 module Icebox
   class Syncer
 
-    def initialize(folder, queue = UploadQueue.new, vault = nil)
+    def initialize(folder, vault, queue = UploadQueue.new)
       @folder = folder
       @queue = queue
       @vault = vault

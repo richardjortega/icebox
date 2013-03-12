@@ -13,7 +13,7 @@ class SyncerTest < Test::Unit::TestCase
     def empty_vault.find_by_md5(md5)
       nil
     end
-    syncer = Syncer.new(@example[:root], mock_upload_queue, empty_vault)
+    syncer = Syncer.new(@example[:root], empty_vault, mock_upload_queue)
     syncer.sync
     assert_equal 4, mock_upload_queue.size
   end
@@ -22,7 +22,7 @@ class SyncerTest < Test::Unit::TestCase
     mock_vault = mock('vault')
     mock_vault.expects(:find_by_md5).times(3).returns(true)
     mock_vault.expects(:find_by_md5).returns(nil)
-    syncer = Syncer.new(@example[:root], mock_upload_queue, mock_vault)
+    syncer = Syncer.new(@example[:root], mock_vault, mock_upload_queue)
     syncer.sync
     assert_equal [@example[:contents].last], mock_upload_queue.collect(&:path)
   end
