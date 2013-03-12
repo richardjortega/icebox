@@ -4,14 +4,28 @@ class SyncerTest < Test::Unit::TestCase
   include Icebox
   include Icebox::Test
 
-  def test_uploads_all_children_and_grandchildren
-    example = create_simple_folder
-    syncer = Syncer.new(example[:root], mock_upload_queue)
-    syncer.sync
-    assert_equal example[:contents].size, mock_upload_queue.size
+  def setup
+    @example = create_simple_folder
   end
 
+  def test_uploads_all_children_and_grandchildren
+    empty_vault = Object.new
+    def empty_vault.find_by_md5(md5)
+      nil
+    end
+    syncer = Syncer.new(@example[:root], mock_upload_queue, empty_vault)
+    syncer.sync
+    assert_equal 4, mock_upload_queue.size
+  end
 
+  def test_does_not_upload_previously_uploaded_files
+    mock_vault = mock('vault')
+    mock_vault.expects(:find_by_md5).times(3).returns(true)
+    mock_vault.expects(:find_by_md5).returns(nil)
+    syncer = Syncer.new(@example[:root], mock_upload_queue, mock_vault)
+    syncer.sync
+    assert_equal [@example[:contents].last], mock_upload_queue.collect(&:path)
+  end
 
   private
 
