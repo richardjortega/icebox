@@ -9,20 +9,16 @@ class SyncerTest < Test::Unit::TestCase
   end
 
   def test_uploads_all_children_and_grandchildren
-    empty_vault = Object.new
-    def empty_vault.find_by_md5(md5)
-      nil
-    end
-    syncer = Syncer.new(@example[:root], empty_vault, mock_upload_queue)
+    ArchivedFile.expects(:find_by_md5).times(4).returns(nil)
+    syncer = Syncer.new(@example[:root], mock_upload_queue)
     syncer.sync
     assert_equal 4, mock_upload_queue.size
   end
 
   def test_does_not_upload_previously_uploaded_files
-    mock_vault = mock('vault')
-    mock_vault.expects(:find_by_md5).at_least_once.returns(true)
-    mock_vault.expects(:find_by_md5).with(@example[:md5s][:a2]).returns(nil)
-    syncer = Syncer.new(@example[:root], mock_vault, mock_upload_queue)
+    ArchivedFile.expects(:find_by_md5).at_least_once.returns(Object.new)
+    ArchivedFile.expects(:find_by_md5).with(@example[:md5s][:a2]).returns(nil)
+    syncer = Syncer.new(@example[:root], mock_upload_queue)
     syncer.sync
     assert_equal [@example[:contents][1]], mock_upload_queue.collect(&:path)
   end

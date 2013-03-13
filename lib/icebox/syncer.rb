@@ -1,10 +1,9 @@
 module Icebox
   class Syncer
 
-    def initialize(folder, vault, queue = UploadQueue.new)
+    def initialize(folder, queue = UploadQueue.new)
       @folder = folder
       @queue = queue
-      @vault = vault
     end
 
     def sync
@@ -21,7 +20,7 @@ module Icebox
     end
 
     def previously_uploaded?(file)
-      @vault.find_by_md5(file.md5)
+      ArchivedFile.find_by_md5(file.md5)
     end
 
   end
