@@ -1,10 +1,13 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'icebox'))
+require File.expand_path(File.join(File.dirname(__FILE__), 'mock_simple_db'))
 require 'bundler'
 Bundler.setup
 require 'test/unit'
 require 'tempfile'
 require 'mocha/setup'
 require 'ostruct'
+require 'json'
+require 'debugger'
 
 module Icebox
   module Test
