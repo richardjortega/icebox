@@ -8,7 +8,7 @@ module Icebox
     end
 
     def sync
-      Dir["#{@folder}/**/*"].reject { |f| File.directory?(f) }.each do |file|
+      Dir["#{@folder}/**/*"].reject { |f| File.directory?(f) }.sort.each do |file|
         upload LocalFile.new(file)
       end
     end

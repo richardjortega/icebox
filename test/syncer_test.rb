@@ -20,11 +20,11 @@ class SyncerTest < Test::Unit::TestCase
 
   def test_does_not_upload_previously_uploaded_files
     mock_vault = mock('vault')
-    mock_vault.expects(:find_by_md5).times(3).returns(true)
-    mock_vault.expects(:find_by_md5).returns(nil)
+    mock_vault.expects(:find_by_md5).at_least_once.returns(true)
+    mock_vault.expects(:find_by_md5).with(@example[:md5s][:a2]).returns(nil)
     syncer = Syncer.new(@example[:root], mock_vault, mock_upload_queue)
     syncer.sync
-    assert_equal [@example[:contents].last], mock_upload_queue.collect(&:path)
+    assert_equal [@example[:contents][1]], mock_upload_queue.collect(&:path)
   end
 
   private
@@ -47,6 +47,8 @@ class SyncerTest < Test::Unit::TestCase
     b1 = File.join(dir_b, 'b1')
     { :root => root, :contents => [a1, a2, aa1, b1] }.tap do |info|
        info[:contents].each_with_index { |file, idx| fill_file(file, (idx+1).KB) }
+       File.open('a2', 'w') { |f| f.write("Deterministic md5") }
+       info[:md5s] = { :a2 => LocalFile.new(a2).md5 }
     end
   end
 
