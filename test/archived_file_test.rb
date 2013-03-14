@@ -10,11 +10,18 @@ class ArchivedFileTest < Test::Unit::TestCase
   end
   
   def test_find_by_md5_returns_archived_file_when_found
-    with_mock_simple_db([{'md5' => '1fdd820a2da31e2f551b12774074ba08', 'name' => 'whatever' }])
+    with_mock_simple_db([{'md5' => ['1fdd820a2da31e2f551b12774074ba08'], 'name' => ['whatever'], 'archive_id' => []}])
     archived_file = ArchivedFile.find_by_md5('1fdd820a2da31e2f551b12774074ba08')
     assert_equal '1fdd820a2da31e2f551b12774074ba08', archived_file.md5
     assert_equal 'whatever', archived_file.name
   end
+  
+  # def test_save_saves_all_attributes
+  #   with_mock_simple_db
+  #   archived_file = ArchiveFile.new('nombre', 'xyz123', 'xyz789')
+  #   archived_file.save!
+  #   
+  # end
 
   private
   

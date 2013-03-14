@@ -9,7 +9,7 @@ module Icebox
       def items
         {}.tap do |items|
           @archived_files.each do |archived_file|
-            items[archived_file['md5']] = Item.new(archived_file)
+            items[archived_file['md5'].first] = Item.new(archived_file)
           end
         end
       end
